@@ -6,28 +6,54 @@
 </head>
 <body>
   <h3>Расчеты</h3>
-  <input id="num1" type="number" placeholder="Введите число 1">
-  <input id="num2" type="number" placeholder="Введите число 2">
-  <button onclick="saveNumbers()">Сохранить</button>
-  <button onclick="calculate()">Посчитать</button>
+  <input id="time_begin" type="number" placeholder="Введите начальное время">
+  <input id="time_end" type="number" placeholder="Введите конечное время">
+  <input id="stop" type="number" placeholder="Введите количество стопов">
+<!-- -->
+  <button onclick="save()">Ввод</button>  
+  <button onclick="saveStop()">СТОП</button>
+  
+  <p id="stop_pass"></p>
+  <p id="stop_res"></p>
+  <p id="result_time"></p>
+  <p id="stop_hour"></p>
 
-  <p id="result"></p>
 
   <script>
     // Загружаем сохранённые значения при открытии страницы
-    document.getElementById("num1").value = localStorage.getItem("num1") || "";
-    document.getElementById("num2").value = localStorage.getItem("num2") || "";
+    document.getElementById("time_begin").value = localStorage.getItem("time_begin") || "";
+    document.getElementById("time_end").value = localStorage.getItem("time_end") || "";
+    document.getElementById("stop").value = localStorage.getItem("stop") || "";
 
-    function saveNumbers() {
-      localStorage.setItem("num1", document.getElementById("num1").value);
-      localStorage.setItem("num2", document.getElementById("num2").value);
-      alert("Данные сохранены!");
+    var stop_pas=0;
+    var stop_res=document.getElementById("stop").value;
+
+    function save() {
+      localStorage.setItem("time_begin", document.getElementById("time_begin").value);
+      localStorage.setItem("time_end", document.getElementById("time_end").value);
+      localStorage.setItem("stop", document.getElementById("stop").value);
+      
+      document.getElementById("stop_pass").innerText = "сделано стопов:" + stop_pas;
+      document.getElementById("stop_res").innerText = "осталось стопов: " + stop_res;
+      calculate_time();
+      // alert("Данные сохранены!");
     }
 
-    function calculate() {
-      const n1 = parseFloat(document.getElementById("num1").value);
-      const n2 = parseFloat(document.getElementById("num2").value);
-      document.getElementById("result").innerText = "Результат: " + (n1 + n2);
+    function calculate_time() {
+      const n1 = parseFloat(document.getElementById("time_begin").value);
+      const n2 = parseFloat(document.getElementById("time_end").value);
+      const n_stop = parseFloat(document.getElementById("stop").value);
+      
+      document.getElementById("result_time").innerText = "Расчетное рабочее время: " + (n2 - n1);
+      document.getElementById("stop_hour").innerText = "кол-во стопов в час: " + n_stop/(n2 - n1);
+    }
+
+    function saveStop() {
+      stop_pas++;
+      stop_res--;
+
+      document.getElementById("stop_pass").innerText = "сделано стопов:" + stop_pas;
+      document.getElementById("stop_res").innerText = "осталось стопов: " + stop_res;
     }
   </script>
 </body>
