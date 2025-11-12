@@ -3,9 +3,10 @@
 }
 
 body {
-  margin: 0;
-  font-family: sans-serif;
-  background-color: #f0f0f0;
+    overflow: hidden;
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f0f0f0;
 }
 
 /* Основной контейнер: 2 колонки */
