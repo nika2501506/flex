@@ -1,25 +1,37 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Remeined time</title>
-  <link rel="stylesheet" href="css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Адаптивная страница</title>
+  <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-  <h3>Расчеты</h3>
-  <input id="time_begin" type="time" placeholder="Введите начальное время">
-  <input id="time_end" type="time" placeholder="Введите конечное время">
-  <input id="stop" type="number" placeholder="Введите количество стопов">
+  <div class="container">
 
-  <button id="btn_input">Ввод</button>  
-  <button id="btn_stop">СТОП</button>
-  
-  <p id="stop_pass"></p>
-  <p id="stop_res"></p>
-  <p id="result_time"></p>
-  <p id="stop_hour"></p>
-  
-  <script type="module" src="js/main.js"></script>
+    <!-- Левая зелёная панель -->
+    <div class="left-panel"></div>
 
+    <!-- Правая часть -->
+    <div class="right-panel">
+      <div class="buttons">
+        
+          <button>Кнопка 1</button>
+          <button>Кнопка 2</button>
+        
+          <button>Кнопка 3</button>
+          <button>Кнопка 4</button>
+        
+      </div>
+
+      <div class="inputs">
+        <input type="time" placeholder="впемя начала">
+        <input type="time" placeholder="время окончания">
+        <input type="text" placeholder="Поле 3">
+        <input type="text" placeholder="Поле 4">
+      </div>
+    </div>
+
+  </div>
 </body>
 </html>

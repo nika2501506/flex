@@ -1,0 +1,156 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: #f0f0f0;
+}
+
+/* Основной контейнер: 2 колонки */
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  padding: 10px;
+  gap: 10px;
+}
+
+/* Левая панель (зелёная) */
+.left-panel {
+  flex: 1;
+  background-color: rgb(174, 187, 180);
+  border-radius: 10px;
+}
+
+/* Правая панель */
+.right-panel {
+  flex: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  /*gap: 20px;*/
+  padding: 10px;
+}
+
+/* Кнопки */
+/*.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}*/
+
+.buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr; /* две колонки */
+  grid-template-rows: auto auto; /* две строки */
+  /*gap: 10px 10;*/ /* вертикальный отступ между рядами, горизонтального — нет */
+  column-gap: 0;  /* горизонтальный зазор убран */
+  row-gap: 15px;  /* вертикальный зазор между верхним и нижним рядом */
+  width: 100%;
+}
+/* Верхние кнопки без промежутка */
+.buttons button:nth-child(1),
+.buttons button:nth-child(2) {
+  /*margin-bottom: 0;*/
+  border-radius: 0;
+  margin: 0;
+  height: 60px;
+}
+
+.buttons button:nth-child(1) {
+  border-top-left-radius: 10px;
+  /*border-bottom-left-radius: 0;*/
+}
+.buttons button:nth-child(2) {
+  border-top-right-radius: 10px;
+  /*border-bottom-right-radius: 0;*/
+  border-left: none; /* убираем стык */
+}
+
+/* Нижние кнопки — с промежутком между ними */
+.buttons button:nth-child(3),
+.buttons button:nth-child(4) {
+  /*margin-top: 10px;*/
+  height: 60px;
+  border-radius: 10px;
+}
+
+/* Нижние кнопки — с промежутком между ними */
+/*.buttons button:nth-child(3) {
+  margin-right: 10px;
+  border-radius: 10px;
+}
+.buttons button:nth-child(4) {
+  margin-left: 10px;
+  border-radius: 10px;
+}*/
+
+/*button {
+  padding: 15px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}*/
+
+/* Сами кнопки — большие, одинаковой высоты */
+button {
+  /*padding: 15px;*/
+  font-size: 1.1em;
+  border: none;
+  /*border-radius: 8px;*/
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+/* Поля ввода */
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  font-size: 1em;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  width: 100%;
+}
+
+/* Адаптация под телефоны (портрет) */
+@media (max-width: 768px) and (orientation: portrait) {
+  .container {
+    flex-direction: row; /* остаётся две колонки */
+  }
+
+  .left-panel {
+    flex: 1;
+    height: 100vh; /* растягивается по высоте */
+  }
+
+  .right-panel {
+    flex: 3;
+    justify-content: center;
+  }
+
+  button {
+    padding: 20px;
+    font-size: 1.2em;
+  }
+
+  input {
+    font-size: 1.1em;
+    padding: 12px;
+  }
+}
