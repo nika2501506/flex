@@ -2,9 +2,11 @@
   box-sizing: border-box;
 }
 
+html {overscroll-behavior-y: none;}
+
 body {
     overflow-y: hidden;
-    overscroll-behavior: none;
+    overscroll-behavior-y: none;
     position: fixed; /* Запрещает прокрутку страницы */
     width: 100%;
     margin: 0;
@@ -34,7 +36,7 @@ body {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  gap: 25px;
+  gap: 75px;
   padding: 20px;
 }
 
@@ -48,7 +50,7 @@ body {
 .buttons {
     display: flex;
     flex-direction: column;
-    gap: 15px; /* расстояние между верхним и нижним рядами */
+    gap: 55px; /* расстояние между верхним и нижним рядами */
     width: 100%;
     margin-bottom: 20px; /* добавляем отступ снизу, чтобы отодвинуть от инпутов */
 }
@@ -155,6 +157,10 @@ button {
 
 button:hover {
   background-color: #0056b3;
+}
+
+.button-stop{
+
 }
 
 /* Поля ввода */
