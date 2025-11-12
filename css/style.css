@@ -2,7 +2,11 @@
   box-sizing: border-box;
 }
 
+html { overscroll-behavior: none; } /* запрещает обновление страницы свайпом*/
+
 body {
+    overflow-y: hidden;
+    overscroll-behavior: none;
     position: fixed; /* Запрещает прокрутку страницы */
     width: 100%;
     margin: 0;
