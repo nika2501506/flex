@@ -1,42 +1,79 @@
 <!DOCTYPE html>
-<html lang="ru">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Адаптивная страница</title>
+  <title>Three Panels Layout</title>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div class="container">
+    <!-- Левая панель -->
+    <div class="left-panel">
+      
 
-    <!-- Левая зелёная панель -->
-    <div class="left-panel"></div>
-
-    <!-- Правая часть -->
-    <div class="right-panel">
-      <div class="buttons">
-        <div>
-        <div class="top-buttons">
-          <button>Пауза 15</button>
-          <button>Пауза 15</button>
-        </div>
-        <div class="bottom-buttons">
-          <button >Пауза 15</button>
-          <button disabled>Пауза 15</button>
-        </div>
-        </div>
-        <button id="stop" class="button-stop">STOP +</button>
-        <button>Stop -</button>
+      <div class="time-input top">
+        <label for="time-end">Time End</label>
+        <input type="time" id="time-end">
       </div>
 
-      <div class="inputs">
-        <input type="time" placeholder="впемя начала">
-        <input type="time" placeholder="время окончания">
-        <input type="text" placeholder="Поле 3" readonly>
-        <input type="text" placeholder="Поле 4" readonly>
+      <div class="green-rect"></div>
+
+      <div class="time-input bottom">
+        <label for="time-begin">Time Begin</label>
+        <input type="time" id="time-begin">
       </div>
     </div>
 
+    <!-- Средняя панель -->
+    <div class="middle-panel">
+      <div class="max-input">
+        <label for="max">Max Stop</label>
+        <input type="number" id="max" value="5" min="0">
+      </div>
+
+      <div class="counter-area">
+        <div id="top-value">5</div>
+        <button id="add-btn">+1</button>
+        <div id="bottom-value">0</div>
+      </div>
+    </div>
+
+    <!-- Правая панель -->
+    <div class="right-panel">
+      <h2 class="panel-title">Pause</h2>
+
+      <button class="btn top1">15 min</button>
+      <button class="btn top2">15 min</button>
+      <div class="double-btn">
+        <button class="btn half top-half">15 min</button>
+        <button class="btn half bottom-half">15 min</button>
+      </div>
+    </div>
   </div>
+
+  <script>
+    const topValue = document.getElementById("top-value");
+    const bottomValue = document.getElementById("bottom-value");
+    const addBtn = document.getElementById("add-btn");
+    const maxInput = document.getElementById("max");
+
+    function resetValues() {
+      topValue.textContent = maxInput.value;
+      bottomValue.textContent = 0;
+    }
+
+    maxInput.addEventListener("input", resetValues);
+    addBtn.addEventListener("click", () => {
+      let top = parseInt(topValue.textContent);
+      let bottom = parseInt(bottomValue.textContent);
+      if (top > 0) {
+        topValue.textContent = top - 1;
+        bottomValue.textContent = bottom + 1;
+      }
+    });
+
+    resetValues();
+  </script>
 </body>
 </html>

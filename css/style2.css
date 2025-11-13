@@ -1,0 +1,206 @@
+* {
+  box-sizing: border-box;
+}
+
+html {overscroll-behavior-y: none;}
+
+body {
+    overflow-y: hidden;
+    overscroll-behavior-y: none;
+    position: fixed; /* Запрещает прокрутку страницы */
+    width: 100%;
+    margin: 0;
+    font-family: sans-serif;
+    background-color: #f0f0f0;
+}
+
+/* Основной контейнер: 2 колонки */
+.container {
+  display: flex;
+  flex-direction: row;
+  height: 100vh;
+  padding: 10px;
+  gap: 10px;
+}
+
+/* Левая панель (зелёная) */
+.left-panel {
+  flex: 1;
+  background-color: rgb(174, 187, 180);
+  border-radius: 10px;
+}
+
+/* Правая панель */
+.right-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  gap: 75px;
+  padding: 20px;
+}
+
+/* Кнопки */
+/*.buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}*/
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 55px; /* расстояние между верхним и нижним рядами */
+    width: 100%;
+    margin-bottom: 20px; /* добавляем отступ снизу, чтобы отодвинуть от инпутов */
+}
+
+/* Верхний ряд — кнопки слеплены */
+.top-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 0;
+}
+
+.top-buttons button {
+  height: 60px;
+  border: none;
+  border-radius: 10;
+  background-color: #007bff;
+  color: white;
+  font-size: 1.1em;
+  cursor: pointer;
+}
+
+.top-buttons button:first-child {
+  border-top-left-radius: 10px;
+}
+.top-buttons button:last-child {
+  border-top-right-radius: 10px;
+}
+
+/* Нижний ряд — между кнопками есть промежуток */
+.bottom-buttons {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  column-gap: 15px; /* промежуток между кнопками 3 и 4 */
+}
+
+.bottom-buttons button {
+  height: 60px;
+  border: none;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1.1em;
+  cursor: pointer;
+}
+
+/* Верхние кнопки без промежутка */
+.buttons button:nth-child(1),
+.buttons button:nth-child(2) {
+  /*margin-bottom: 0;*/
+  border-radius: 0;
+  margin: 0;
+  height: 60px;
+}
+
+.buttons button:nth-child(1) {
+  border-top-left-radius: 10px;
+  /*border-bottom-left-radius: 0;*/
+}
+.buttons button:nth-child(2) {
+  border-top-right-radius: 10px;
+  /*border-bottom-right-radius: 0;*/
+  border-left: none; /* убираем стык */
+}
+
+/* Нижние кнопки — с промежутком между ними */
+.buttons button:nth-child(3),
+.buttons button:nth-child(4) {
+  /*margin-top: 10px;*/
+  height: 60px;
+  border-radius: 10px;
+}
+
+/* Нижние кнопки — с промежутком между ними */
+/*.buttons button:nth-child(3) {
+  margin-right: 10px;
+  border-radius: 10px;
+}
+.buttons button:nth-child(4) {
+  margin-left: 10px;
+  border-radius: 10px;
+}*/
+
+/*button {
+  padding: 15px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 8px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}*/
+
+/* Сами кнопки — большие, одинаковой высоты */
+button {
+  /*padding: 15px;*/
+  font-size: 1.1em;
+  border: none;
+  /*border-radius: 8px;*/
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+  width: 100%;
+}
+
+button:hover {
+  background-color: #0056b3;
+}
+
+.button-stop{
+
+}
+
+/* Поля ввода */
+.inputs {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+input {
+  padding: 10px;
+  font-size: 1em;
+  /*border: 1px solid #ccc;*/
+  border-radius: 5px;
+  width: 100%;
+}
+
+/* Адаптация под телефоны (портрет) */
+@media (max-width: 768px) and (orientation: portrait) {
+  .container {
+    flex-direction: row; /* остаётся две колонки */
+  }
+
+  .left-panel {
+    flex: 1;
+    height: 100vh; /* растягивается по высоте */
+  }
+
+  .right-panel {
+    flex: 3;
+    justify-content: center;
+  }
+
+  button {
+    padding: 20px;
+    font-size: 1.2em;
+  }
+
+  input {
+    font-size: 1.1em;
+    padding: 12px;
+  }
+}
