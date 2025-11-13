@@ -29,7 +29,10 @@
         <input type="time" id="time-end">
       </div>
 
-      <div class="green-rect"></div>
+      <div class="green-rect">
+        <div class="grey-rect" id="greyRect"></div>
+        <div class="pass-rect" id="passRect"></div>
+      </div>
 
       <div class="time-input bottom">
         <label for="time-begin">Time Begin</label>
@@ -65,6 +68,15 @@
   </div>
 
   <script>
+    let startMinutes = null;
+
+    function timeToMinutes(str) {
+        if (!str) return null;
+        const [h, m] = str.split(':').map(Number);
+        return h * 60 + m;
+    }
+
+    //код был раньше
     const topValue = document.getElementById("top-value");
     const bottomValue = document.getElementById("bottom-value");
     const addBtn = document.getElementById("add-btn");
@@ -76,6 +88,7 @@
     }
 
     maxInput.addEventListener("input", resetValues);
+    
     addBtn.addEventListener("click", () => {
       let top = parseInt(topValue.textContent);
       let bottom = parseInt(bottomValue.textContent);
@@ -83,10 +96,82 @@
         topValue.textContent = top - 1;
         bottomValue.textContent = bottom + 1;
       }
+      //новый код
+        const now = new Date();
+        const nowMinutes = now.getHours() * 60 + now.getMinutes();
+
+        const timeEndStr = document.getElementById('time-end').value;
+        const maxStop = parseFloat(document.getElementById('max').value);
+        const rect = document.getElementById('passRect');
+
+        const passRect = document.getElementById('passRect');
+        const greyRect = document.getElementById('greyRect');
+        
+        if (!timeEndStr) {
+            rect.textContent = "⚠️ No end time";
+            return;
+        }
+
+        const endMinutes = timeToMinutes(timeEndStr);
+
+        // первое нажатие фиксирует начало
+        if (startMinutes === null) {
+            startMinutes = nowMinutes;
+            /*document.getElementById('time-begin').value =
+            `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            rect.textContent = "Start";*/
+            return;
+        }
+
+        // последующие нажатия: считаем
+        if (nowMinutes >= endMinutes) {
+            passRect.style.height = "100%";
+            greyRect.style.height = "0%";
+            //rect.textContent = maxStop;
+            return;
+        }
+
+        const total = endMinutes - startMinutes;
+        const passed = nowMinutes - startMinutes;
+
+        if (passed < 0 || total <= 0) {
+            //rect.textContent = "⚠️ Time error";
+            return;
+        }
+
+        const current = Math.ceil(maxStop / total * passed);
+        // вычисляем высоты в %
+        const passPercent = (current / maxStop) * 100;
+        const greyPercent = 100 - passPercent;
+        const colorGreen="#25c25c";
+        const colorYellow="#f7af7a";
+        const colorRed="#eb5b5b";
+
+        passRect.style.height = `${passPercent}%`;
+        greyRect.style.height = `${greyPercent}%`;
+        
+        passRect.textContent = current;
+
+        if ((current - bottom) >5){
+            passRect.style.backgroundColor = `${colorRed}`;
+            bottomValue.style.backgroundColor= `${colorRed}`;
+        }
+        if ((current - bottom) < 5 && (current - bottom) > -5){
+            passRect.style.backgroundColor = `${colorYellow}`;
+            bottomValue.style.backgroundColor= `${colorYellow}`;
+        }
+        if ((current - bottom) < -5){
+            console.log(bottom);
+            passRect.style.backgroundColor = `${colorGreen}`;
+            bottomValue.style.backgroundColor = `${colorGreen}`;
+        }         
+        //rect.textContent = current;
     });
 
     resetValues();
   </script>
+
+  <!-- Убираем тапанье и зум -->
   <script>
     let lastTouchEnd = 0;
     document.addEventListener('touchend', (event) => {
