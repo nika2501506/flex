@@ -44,7 +44,7 @@
     <div class="middle-panel">
       <div class="max-input">
         <label for="max">Max Stop</label>
-        <input type="number" id="max" value="5" min="0">
+        <input type="number" id="max" value="50" min="0">
       </div>
 
       <div class="counter-area">
@@ -58,7 +58,7 @@
     <div class="right-panel">
       <h2 class="panel-title">Pause</h2>
 
-      <button class="pause-btn btn top1" data-min="15">15 min</button>
+      <button class="pause-btn btn top1" data-min="15" style="display:none;">15 min</button>
       <button class="pause-btn btn top2" data-min="15">15 min</button>
       <div class="double-btn">
         <button class="pause-btn btn half top-half" data-min="15">15 min</button> 
@@ -68,6 +68,18 @@
   </div>
 
   <script>
+    //загружаем сохраненные значения
+    /*    ocalStorage.setItem("startMinutes", startMinutes);
+        localStorage.setItem("endMinutes",endMinutes);
+        localStorage.setItem("maxInput", maxInput.value);
+        localStorage.setItem("top", topValue);
+        localStorage.setItem("bottom", bottomValue);
+        localStorage.setItem("timeEndStr", timeEndStr);*/
+    /*document.getElementById('time-end').value = localStorage.getItem("timeEndStr") || "";
+    document.getElementById("max").value = localStorage.getItem("maxInput") || "";
+    document.getElementById("top-value").textContent = localStorage.getItem("top")|| "";
+    document.getElementById("bottom-value").textContent = localStorage.getItem("bottom")|| "";
+    */
     let startMinutes = null;
 
     function timeToMinutes(str) {
@@ -89,7 +101,8 @@
 
     maxInput.addEventListener("input", resetValues);
 
-    const PAUSETIME=2;
+    const PAUSETIME=15;
+    const PAUSENUM=2;
     //новый код для кнопок паузы
       document.querySelectorAll(".pause-btn").forEach(btn => {
         btn.addEventListener("click", () => {
@@ -154,21 +167,27 @@
             return;
         }
 
-        const total = endMinutes - startMinutes - PAUSETIME*4;
-        //const passedTime = nowMinutes - startMinutes + pauseMinutes;//здесь добавлено уже время использованных пауз
-        const passed = nowMinutes - startMinutes;// это без пауз, для расчета тек. кол-ва посылок
-
-        if (passed < 0 || total <= 0) {
-            rect.textContent = "⚠️ Time error";
-            return;
+        const totalTime = endMinutes - startMinutes - PAUSETIME*PAUSENUM;
+        const stopMinute = maxStop / totalTime; // расчетное кол-во в минуту
+        let passedTime = nowMinutes - startMinutes;
+        if (passedTime > totalTime){
+          passedTime = totalTime;
         }
+        const stopCurrent = Math.ceil(passedTime * stopMinute); // расчетное кол-во на тек. момент
+        
+        console.log("---------");
+        console.log("totalTime: ", totalTime);
+        console.log("stopMinute = maxStop/totalTime: ", stopMinute);
+        console.log("passedTime: ", passedTime);
+        console.log("stopCurrent: ", stopCurrent);
+        console.log("---------------------");
+        
+        const total = endMinutes - startMinutes;               
+        const passed = nowMinutes - startMinutes;
 
-        const current = Math.ceil(maxStop / total * passed);
-        // вычисляем высоты в %
-        /*const passPercent = (current / maxStop) * 100;*/
-        const passPercent = ((passed + pauseMinutes) / (total+pauseMinutes)) * 100;
-
+        const passPercent = (passed / total) * 100;
         const greyPercent = 100 - passPercent;
+
         const colorGreen="#25c25c";
         const colorYellow="#f7af7a";
         const colorRed="#eb5b5b";
@@ -176,23 +195,31 @@
         passRect.style.height = `${passPercent}%`;
         greyRect.style.height = `${greyPercent}%`;
         
-        passRect.textContent = current;
+        passRect.textContent = stopCurrent;
         passRect.style.color="White";
 
-        if ((current - bottom) >5){
+        if ((stopCurrent - bottom) >2){
             passRect.style.backgroundColor = `${colorRed}`;            
             bottomValue.style.backgroundColor= `${colorRed}`;
         }
-        if ((current - bottom) < 5 && (current - bottom) > -5){
+        if ((stopCurrent - bottom) <= 2 && (stopCurrent - bottom) >= -1){
             passRect.style.backgroundColor = `${colorYellow}`;
             bottomValue.style.backgroundColor= `${colorYellow}`;
         }
-        if ((current - bottom) < -5){
+        if ((stopCurrent - bottom) < -1){
             console.log(bottom);
             passRect.style.backgroundColor = `${colorGreen}`;
             bottomValue.style.backgroundColor = `${colorGreen}`;
-        }         
-        //rect.textContent = current;
+        }
+        //сохраняем данные
+        //localStorage.setItem("time_end", document.getElementById("time_end").value);    
+        /*localStorage.setItem("startMinutes", startMinutes);
+        localStorage.setItem("endMinutes",endMinutes);
+        localStorage.setItem("maxInput", maxInput.value);
+        localStorage.setItem("top", topValue);
+        localStorage.setItem("bottom", bottomValue);
+        localStorage.setItem("timeEndStr", timeEndStr);
+        */
     });
 
     resetValues();
