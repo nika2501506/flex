@@ -262,7 +262,7 @@ body {
   width: 100%;
   border-radius: 0;
   border: none;
-  background-color: #007bff;
+  /*background-color: #007bff;*/
 }
 
 .double-btn .top-half {
@@ -276,7 +276,23 @@ body {
   margin-top: -1px; /* убирает щель */
 }
 
-.btn:hover,
+/*.btn:hover,
 .double-btn .half:hover {
   background-color: #0056b3;
+}*/
+
+.pause-btn {
+  background: #007bff;
+  border: 1px solid #aaa;
+  padding: 12px;
+  margin: 5px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.pause-btn.active {
+  background: #f50505;
+  box-shadow: inset 2px 2px 6px rgba(0,0,0,0.4);
+  transform: translateY(2px);
 }

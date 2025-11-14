@@ -58,11 +58,11 @@
     <div class="right-panel">
       <h2 class="panel-title">Pause</h2>
 
-      <button class="btn top1">15 min</button>
-      <button class="btn top2">15 min</button>
+      <button class="pause-btn btn top1" data-min="15">15 min</button>
+      <button class="pause-btn btn top2" data-min="15">15 min</button>
       <div class="double-btn">
-        <button class="btn half top-half">15 min</button>
-        <button class="btn half bottom-half">15 min</button>
+        <button class="pause-btn btn half top-half" data-min="15">15 min</button> 
+        <button class="pause-btn btn half bottom-half" data-min="15">15 min</button>
       </div>
     </div>
   </div>
@@ -88,27 +88,50 @@
     }
 
     maxInput.addEventListener("input", resetValues);
+
+    const PAUSETIME=2;
+    //новый код для кнопок паузы
+      document.querySelectorAll(".pause-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+                btn.classList.toggle("active");
+            });
+        });
+    // конец кода паузы
+
+    //код для вычисления общей нажатой паузы
+    function getTotalPauseMinutes() {
+        let total = 0;
+    
+        document.querySelectorAll(".pause-btn.active").forEach(btn => {
+            total += PAUSETIME; //Приняли одну паузу как 2 минута. Number(btn.dataset.min);
+        });
+
+        return total;
+    }
+    //конец вычисления общей паузы
     
     addBtn.addEventListener("click", () => {
+      const pauseMinutes = getTotalPauseMinutes();
       let top = parseInt(topValue.textContent);
       let bottom = parseInt(bottomValue.textContent);
       if (top > 0) {
         topValue.textContent = top - 1;
         bottomValue.textContent = bottom + 1;
       }
+      
       //новый код
         const now = new Date();
         const nowMinutes = now.getHours() * 60 + now.getMinutes();
 
         const timeEndStr = document.getElementById('time-end').value;
         const maxStop = parseFloat(document.getElementById('max').value);
-        const rect = document.getElementById('passRect');
+        //const rect = document.getElementById('passRect');
 
         const passRect = document.getElementById('passRect');
         const greyRect = document.getElementById('greyRect');
         
         if (!timeEndStr) {
-            rect.textContent = "⚠️ No end time";
+            passRect.textContent = "⚠️ No end time";
             return;
         }
 
@@ -127,21 +150,24 @@
         if (nowMinutes >= endMinutes) {
             passRect.style.height = "100%";
             greyRect.style.height = "0%";
-            //rect.textContent = maxStop;
+            passRect.textContent = maxStop;
             return;
         }
 
-        const total = endMinutes - startMinutes;
-        const passed = nowMinutes - startMinutes;
+        const total = endMinutes - startMinutes - PAUSETIME*4;
+        //const passedTime = nowMinutes - startMinutes + pauseMinutes;//здесь добавлено уже время использованных пауз
+        const passed = nowMinutes - startMinutes;// это без пауз, для расчета тек. кол-ва посылок
 
         if (passed < 0 || total <= 0) {
-            //rect.textContent = "⚠️ Time error";
+            rect.textContent = "⚠️ Time error";
             return;
         }
 
         const current = Math.ceil(maxStop / total * passed);
         // вычисляем высоты в %
-        const passPercent = (current / maxStop) * 100;
+        /*const passPercent = (current / maxStop) * 100;*/
+        const passPercent = ((passed + pauseMinutes) / (total+pauseMinutes)) * 100;
+
         const greyPercent = 100 - passPercent;
         const colorGreen="#25c25c";
         const colorYellow="#f7af7a";
@@ -151,9 +177,10 @@
         greyRect.style.height = `${greyPercent}%`;
         
         passRect.textContent = current;
+        passRect.style.color="White";
 
         if ((current - bottom) >5){
-            passRect.style.backgroundColor = `${colorRed}`;
+            passRect.style.backgroundColor = `${colorRed}`;            
             bottomValue.style.backgroundColor= `${colorRed}`;
         }
         if ((current - bottom) < 5 && (current - bottom) > -5){
