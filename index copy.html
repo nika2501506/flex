@@ -43,11 +43,6 @@
 
     <!-- Средняя панель -->
     <div class="middle-panel">
-      <div class="time-input top">
-        <label for="time-end">Time empfälen</label>
-        <input type="time" id="time-emp">
-      </div>
-
       <div class="max-input">
         <label for="max">Max Stop</label>
         <input type="number" id="max" value="" min="0">
@@ -65,7 +60,7 @@
       <h2 class="panel-title">Pause</h2>
 
       <button class="pause-btn btn top1" data-min="15" style="display:none;">15 min</button>
-      <button class="pause-btn btn top2" data-min="15" id="pauseBtn3">15 min</button>
+      <button class="pause-btn btn top2" data-min="15">15 min</button>
       <div class="double-btn">
         <button class="pause-btn btn half top-half" data-min="15">15 min</button> 
         <button class="pause-btn btn half bottom-half" data-min="15">15 min</button>
@@ -75,8 +70,7 @@
 
   <script>
     const PAUSETIME=1;
-    const TIME45 = 570;
-    //const PAUSENUM=2;
+    const PAUSENUM=2;
     //загружаем сохраненные значения
     /*    ocalStorage.setItem("startMinutes", startMinutes);
         localStorage.setItem("endMinutes",endMinutes);
@@ -98,22 +92,11 @@
         return h * 60 + m;
     }
 
-    function minutesToTimeString(totalMinutes) {
-        const hours = Math.floor(totalMinutes / 60);
-        const minutes = totalMinutes % 60;
-
-        // добавляем ведущий ноль для минут
-        const mm = minutes.toString().padStart(2, '0');
-
-        return `${hours}:${mm}`;
-    }
-
     //код был раньше
     const topValue = document.getElementById("top-value");
     const bottomValue = document.getElementById("bottom-value");
     const addBtn = document.getElementById("add-btn");
     const maxInput = document.getElementById("max");
-    const pauseBtn3 = document.getElementById("pauseBtn3");
 
     function resetValues() {
       topValue.textContent = maxInput.value;
@@ -134,10 +117,12 @@
 
     //код для вычисления общей нажатой паузы
     function getTotalPauseMinutes() {
-        let total = 0;    
+        let total = 0;
+    
         document.querySelectorAll(".pause-btn.active").forEach(btn => {
             total += PAUSETIME; //Приняли одну паузу как 2 минута. Number(btn.dataset.min);
         });
+
         return total;
     }
     //конец вычисления общей паузы
@@ -157,10 +142,9 @@
         const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
 
         const timeEndStr = document.getElementById('time-end').value;
-        const timeStartStr = document.getElementById('time-begin').value;//для вычисления общего рабочего времени 
+        const maxStop = parseFloat(document.getElementById('max').value);
+        //const rect = document.getElementById('passRect');
 
-        const maxStop = parseInt(document.getElementById('max').value);
-        
         const passRect = document.getElementById('passRect');
         const greyRect = document.getElementById('greyRect');
         
@@ -170,39 +154,29 @@
         }
 
         const endMinutes = timeToMinutes(timeEndStr);
-        const beginMinutes = timeToMinutes(timeStartStr);//для вычисления общего рабочего времени 
-        const empf = document.getElementById('time-emp');//рекоменд оконч
-
-        const durationDay = endMinutes - beginMinutes;
-        let pauseNum = 2;
-
-        console.log("durationDay: ",durationDay);
-
-        //определяем доп. паузу
-        if (durationDay < TIME45){
-          pauseBtn3.disabled = true;
-          pauseNum = 3;
-        }
-
-        if (durationDay > 535 && durationDay < 565 ){
-          //установить рекомендуемое время 565: start + 9:25min
-          empf.value = minutesToTimeString(beginMinutes+565);
-        }
 
         // первое нажатие фиксирует начало
         if (startMinutes === null) {
             startMinutes = nowMinutes;
             startSec = nowSec;
+            /*document.getElementById('time-begin').value =
+            `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+            rect.textContent = "Start";*/
             return;
         }
 
         // последующие нажатия: считаем
         if ((nowMinutes + getTotalPauseMinutes) >= endMinutes) {
             divider.style.top="0%";
+            /*
+            passRect.style.height = "100%";
+            greyRect.style.height = "0%";
+            passRect.textContent = maxStop;
+            return;*/
         }
 
-        const totalTime = endMinutes - startMinutes - PAUSETIME*pauseNum;
-        const totalTimeSec = (endMinutes * 60) - startSec - PAUSETIME*pauseNum*60;
+        const totalTime = endMinutes - startMinutes - PAUSETIME*PAUSENUM;
+        const totalTimeSec = (endMinutes * 60) - startSec - PAUSETIME*PAUSENUM*60;
         const stopMinute = maxStop / totalTime; // расчетное кол-во в минуту
         const stopSec = maxStop / totalTimeSec; // расчетное кол-во в секунду
         let passedTime = nowMinutes - startMinutes;
@@ -214,12 +188,8 @@
         }
 
         const stopCurrent = Math.ceil(passedTime * stopMinute); // расчетное кол-во на тек. момент
-        let stopCurrentSec = Math.ceil(passedTimeSec * stopSec); // расчетное кол-во на тек. момент
+        const stopCurrentSec = Math.ceil(passedTimeSec * stopSec); // расчетное кол-во на тек. момент
         
-        if (stopCurrentSec > maxStop){
-          stopCurrentSec = maxStop;
-        }
-
         // выводим пунктирный делитель - расчетное кол. стопов
         divPercent = 100 - Math.ceil(stopCurrentSec / maxStop * 100);
         divider.style.top = divPercent + "%";
@@ -233,6 +203,7 @@
         console.log("totalTime: ", totalTime);
         console.log("stopMinute = maxStop/totalTime: ", stopMinute);
         console.log("passedTime: ", passedTime);
+        console.log("stopCurrent: ", stopCurrent);
         console.log("---------------------");
         
         const colorGreen="#25c25c";
@@ -242,15 +213,16 @@
         const total = endMinutes - startMinutes;               
         const passed = nowMinutes - startMinutes;
 
+        //const passPercent = (passed / total) * 100;
+
         //выводим столбик сделанных стопов passRect
-        bottom = parseInt(bottomValue.textContent);
         const passPercent = bottom / maxStop * 100;
         const greyPercent = 100 - passPercent;        
 
         passRect.style.height = `${passPercent}%`;
         greyRect.style.height = `${greyPercent}%`;
         
-        passRect.textContent = bottom;   //stopCurrent;
+        passRect.textContent = bottom+1;   //stopCurrent;
         passRect.style.color="White";
 
         if ((stopCurrentSec - bottom) >2){
