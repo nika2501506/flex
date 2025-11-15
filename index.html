@@ -23,7 +23,6 @@
     <!-- Левая панель -->
     <div class="left-panel">
       
-
       <div class="time-input top">
         <label for="time-end">Time End</label>
         <input type="time" id="time-end">
@@ -76,19 +75,7 @@
   <script>
     const PAUSETIME=1;
     const TIME45 = 570;
-    //const PAUSENUM=2;
-    //загружаем сохраненные значения
-    /*    ocalStorage.setItem("startMinutes", startMinutes);
-        localStorage.setItem("endMinutes",endMinutes);
-        localStorage.setItem("maxInput", maxInput.value);
-        localStorage.setItem("top", topValue);
-        localStorage.setItem("bottom", bottomValue);
-        localStorage.setItem("timeEndStr", timeEndStr);*/
-    /*document.getElementById('time-end').value = localStorage.getItem("timeEndStr") || "";
-    document.getElementById("max").value = localStorage.getItem("maxInput") || "";
-    document.getElementById("top-value").textContent = localStorage.getItem("top")|| "";
-    document.getElementById("bottom-value").textContent = localStorage.getItem("bottom")|| "";
-    */
+
     let startMinutes = null;
     let startSec = null;
 
@@ -101,14 +88,11 @@
     function minutesToTimeString(totalMinutes) {
         const hours = Math.floor(totalMinutes / 60);
         const minutes = totalMinutes % 60;
-
         // добавляем ведущий ноль для минут
         const mm = minutes.toString().padStart(2, '0');
-
         return `${hours}:${mm}`;
     }
 
-    //код был раньше
     const topValue = document.getElementById("top-value");
     const bottomValue = document.getElementById("bottom-value");
     const addBtn = document.getElementById("add-btn");
@@ -123,8 +107,7 @@
     maxInput.addEventListener("input", resetValues);
     const divider = document.getElementById("divider");
 
-
-    //новый код для кнопок паузы
+    //новый код для кнопок паузы_ 
     document.querySelectorAll(".pause-btn").forEach(btn => {
       btn.addEventListener("click", () => {
               btn.classList.toggle("active");
@@ -132,7 +115,7 @@
     });
     // конец кода паузы
 
-    //код для вычисления общей нажатой паузы
+    //код для вычисления общей нажатой паузы, возможно он не нужен (не учитыв.)
     function getTotalPauseMinutes() {
         let total = 0;    
         document.querySelectorAll(".pause-btn.active").forEach(btn => {
@@ -152,129 +135,125 @@
       }
       
       //новый код
-        const now = new Date();
-        const nowMinutes = now.getHours() * 60 + now.getMinutes();
-        const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+      const now = new Date();
+      const nowMinutes = now.getHours() * 60 + now.getMinutes();
+      const nowSec = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
 
-        const timeEndStr = document.getElementById('time-end').value;
-        const timeStartStr = document.getElementById('time-begin').value;//для вычисления общего рабочего времени 
+      const timeEndStr = document.getElementById('time-end').value;
+      const timeStartStr = document.getElementById('time-begin').value;//для вычисления общего рабочего времени 
 
-        const maxStop = parseInt(document.getElementById('max').value);
-        
-        const passRect = document.getElementById('passRect');
-        const greyRect = document.getElementById('greyRect');
-        
-        if (!timeEndStr) {
-            passRect.textContent = "⚠️ No end time";
-            return;
-        }
+      const maxStop = parseInt(document.getElementById('max').value);
+      
+      const passRect = document.getElementById('passRect');
+      const greyRect = document.getElementById('greyRect');
+      
+      if (!timeEndStr) {
+          passRect.textContent = "⚠️ No end time";
+          return;
+      }
 
-        const endMinutes = timeToMinutes(timeEndStr);
-        const beginMinutes = timeToMinutes(timeStartStr);//для вычисления общего рабочего времени 
-        const empf = document.getElementById('time-emp');//рекоменд оконч
+      const endMinutes = timeToMinutes(timeEndStr);
+      const beginMinutes = timeToMinutes(timeStartStr);//для вычисления общего рабочего времени 
+      const empf = document.getElementById('time-emp');//рекоменд оконч
 
-        const durationDay = endMinutes - beginMinutes;
-        let pauseNum = 2;
+      const durationDay = endMinutes - beginMinutes;
+      let pauseNum = 2;
 
-        console.log("durationDay: ",durationDay);
+      console.log("durationDay: ",durationDay);
 
-        //определяем доп. паузу
-        if (durationDay < TIME45){
-          pauseBtn3.disabled = true;
-          pauseNum = 3;
-        }
+      //определяем доп. паузу
+      if (durationDay < TIME45){
+        pauseBtn3.disabled = true;
+        pauseNum = 3;
+      }
 
-        if (durationDay > 535 && durationDay < 565 ){
-          //установить рекомендуемое время 565: start + 9:25min
-          empf.value = minutesToTimeString(beginMinutes+565);
-        }
+      if (durationDay > 535 && durationDay < 565 ){
+        //установить рекомендуемое время 565: start + 9:25min
+        empf.value = minutesToTimeString(beginMinutes+565);
+      }
 
-        // первое нажатие фиксирует начало
-        if (startMinutes === null) {
-            startMinutes = nowMinutes;
-            startSec = nowSec;
-            return;
-        }
+      // первое нажатие фиксирует начало
+      if (startMinutes === null) {
+          startMinutes = nowMinutes;
+          startSec = nowSec;
+          return;
+      }
 
-        // последующие нажатия: считаем
-        if ((nowMinutes ) >= endMinutes) { //+ pauseMinutes
-            divider.style.top="0%";
-        }
+      // последующие нажатия: считаем
+      if ((nowMinutes ) >= endMinutes) { //+ pauseMinutes
+          divider.style.top="0%";
+      }
 
-        const totalTime = endMinutes - startMinutes - PAUSETIME*pauseNum;
-        const totalTimeSec = (endMinutes * 60) - startSec - PAUSETIME*pauseNum*60;
-        const stopMinute = maxStop / totalTime; // расчетное кол-во в минуту
-        const stopSec = maxStop / totalTimeSec; // расчетное кол-во в секунду
-        let passedTime = nowMinutes - startMinutes;
-        let passedTimeSec = nowSec - startSec;
+      const totalTime = endMinutes - startMinutes - PAUSETIME*pauseNum;
+      const totalTimeSec = (endMinutes * 60) - startSec - PAUSETIME*pauseNum*60;
+      const stopMinute = maxStop / totalTime; // расчетное кол-во в минуту
+      const stopSec = maxStop / totalTimeSec; // расчетное кол-во в секунду
+      let passedTime = nowMinutes - startMinutes;
+      let passedTimeSec = nowSec - startSec;
 
-        if (passedTime > totalTime){
-          passedTime = totalTime;
-          passedTimeSec = totalTime * 60;
-        }
+      if (passedTime > totalTime){
+        passedTime = totalTime;
+        passedTimeSec = totalTime * 60;
+      }
 
-        const stopCurrent = Math.ceil(passedTime * stopMinute); // расчетное кол-во на тек. момент
-        let stopCurrentSec = Math.ceil(passedTimeSec * stopSec); // расчетное кол-во на тек. момент
-        
-        if (stopCurrentSec > maxStop){
-          stopCurrentSec = maxStop;
-        }
+      const stopCurrent = Math.ceil(passedTime * stopMinute); // расчетное кол-во на тек. момент
+      let stopCurrentSec = Math.ceil(passedTimeSec * stopSec); // расчетное кол-во на тек. момент
+      
+      if (stopCurrentSec > maxStop){
+        stopCurrentSec = maxStop;
+      }
 
-        // выводим пунктирный делитель - расчетное кол. стопов
-        divPercent = 100 - Math.ceil(stopCurrentSec / maxStop * 100);
-        divider.style.top = divPercent + "%";
-        divider.textContent = stopCurrentSec;
-        // конец вывода пунктирного делителя
+      // выводим пунктирный делитель - расчетное кол. стопов
+      divPercent = 100 - Math.ceil(stopCurrentSec / maxStop * 100);
+      divider.style.top = divPercent + "%";
+      divider.textContent = stopCurrentSec;
+      // конец вывода пунктирного делителя
 
-        console.log("---------");
-        console.log("stopCurrent: ", stopCurrent);
-        console.log("stopCurrentSec: ", stopCurrentSec);
-        console.log("\n");
-        console.log("totalTime: ", totalTime);
-        console.log("stopMinute = maxStop/totalTime: ", stopMinute);
-        console.log("passedTime: ", passedTime);
-        console.log("---------------------");
-        
-        const colorGreen="#25c25c";
-        const colorYellow="#f7af7a";
-        const colorRed="#eb5b5b";
+      console.log("---------");
+      console.log("stopCurrent: ", stopCurrent);
+      console.log("stopCurrentSec: ", stopCurrentSec);
+      console.log("\n");
+      console.log("totalTime: ", totalTime);
+      console.log("stopMinute = maxStop/totalTime: ", stopMinute);
+      console.log("passedTime: ", passedTime);
+      console.log("---------------------");
+      
+      const colorGreen="#25c25c";
+      const colorYellow="#f7af7a";
+      const colorRed="#eb5b5b";
+      const colorMagenta="#aa0063";
 
-        const total = endMinutes - startMinutes;               
-        const passed = nowMinutes - startMinutes;
+      const total = endMinutes - startMinutes;               
+      const passed = nowMinutes - startMinutes;
 
-        //выводим столбик сделанных стопов passRect
-        bottom = parseInt(bottomValue.textContent);
-        const passPercent = bottom / maxStop * 100;
-        const greyPercent = 100 - passPercent;        
+      //выводим столбик сделанных стопов passRect
+      bottom = parseInt(bottomValue.textContent);
+      const passPercent = bottom / maxStop * 100;
+      const greyPercent = 100 - passPercent;        
 
-        passRect.style.height = `${passPercent}%`;
-        greyRect.style.height = `${greyPercent}%`;
-        
-        passRect.textContent = bottom;   //stopCurrent;
-        passRect.style.color="White";
+      passRect.style.height = `${passPercent}%`;
+      greyRect.style.height = `${greyPercent}%`;
+      
+      passRect.textContent = bottom;   //stopCurrent;
+      passRect.style.color="White";
 
-        if ((stopCurrentSec - bottom) >2){
-            passRect.style.backgroundColor = `${colorGreen}`;            
-            bottomValue.style.backgroundColor= `${colorGreen}`;
-        }
-        if ((stopCurrentSec - bottom) <= 2 && (stopCurrentSec - bottom) >= -1){
-            passRect.style.backgroundColor = `${colorYellow}`;
-            bottomValue.style.backgroundColor= `${colorYellow}`;
-        }
-        if ((stopCurrentSec - bottom) < -1){
-            console.log(bottom);
-            passRect.style.backgroundColor = `${colorRed}`;
-            bottomValue.style.backgroundColor = `${colorRed}`;
-        }
-        //сохраняем данные
-        //localStorage.setItem("time_end", document.getElementById("time_end").value);    
-        /*localStorage.setItem("startMinutes", startMinutes);
-        localStorage.setItem("endMinutes",endMinutes);
-        localStorage.setItem("maxInput", maxInput.value);
-        localStorage.setItem("top", topValue);
-        localStorage.setItem("bottom", bottomValue);
-        localStorage.setItem("timeEndStr", timeEndStr);
-        */
+      if ((stopCurrentSec - bottom) >10){
+          passRect.style.backgroundColor = `${colorMagenta}`;            
+          bottomValue.style.backgroundColor= `${colorMagenta}`;
+      }
+      if ((stopCurrentSec - bottom) >2 && (stopCurrentSec - bottom) <= 10){
+          passRect.style.backgroundColor = `${colorGreen}`;            
+          bottomValue.style.backgroundColor= `${colorGreen}`;
+      }
+      if ((stopCurrentSec - bottom) <= 2 && (stopCurrentSec - bottom) >= -1){
+          passRect.style.backgroundColor = `${colorYellow}`;
+          bottomValue.style.backgroundColor= `${colorYellow}`;
+      }
+      if ((stopCurrentSec - bottom) < -1){
+          console.log(bottom);
+          passRect.style.backgroundColor = `${colorRed}`;
+          bottomValue.style.backgroundColor = `${colorRed}`;
+      }
     });
 
     resetValues();
